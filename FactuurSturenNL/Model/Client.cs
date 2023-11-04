@@ -56,8 +56,9 @@ public class Client
   /// <summary>
   ///   When last invoice to this client was sent
   /// </summary>
+  [JsonConverter(typeof(NullableDateOnlyAsStringConverter))]
   [JsonPropertyName("lastinvoice")]
-  public DateTime? LastInvoice { get; set; }
+  public DateOnly? LastInvoice { get; set; }
 
   /// <summary>
   ///   How to send the invoice to the receiver.

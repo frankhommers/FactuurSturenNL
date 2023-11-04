@@ -22,10 +22,19 @@ public partial class FactuurSturenClient
       throw new HttpRequestException("Failed to get clients");
 
     string? responseBody = await response.Content.ReadAsStringAsync();
-    Client[]? result = JsonSerializer.Deserialize<Client[]>(responseBody, _jsonSerializerOptions);
-
-    if (result == null)
-      throw new HttpRequestException("Failed to deserialize clients");
+    Client[]? result = null;
+    try
+    {
+      result = JsonSerializer.Deserialize<Client[]>(responseBody, _jsonSerializerOptions);
+      if (result == null) throw new JsonException("Failed to deserialize clients");
+    }
+    catch(Exception ex)
+    {
+      throw new DetailedHttpRequestException("Failed to deserialize clients", ex)
+      {
+        Response = responseBody
+      };
+    }
 
     if (allowCache.Value)
       _cachedClients = new List<Client>(result);
